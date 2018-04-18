@@ -1,17 +1,11 @@
 package com.taylor.integra;
 
-import com.taylor.utilities.Util;
-
 public class Command {
-
-	@SuppressWarnings("unused")
-	private static final boolean DEBUGGING = Util.DEBUGGING;
 	
 	private String name;
 	private String command;
 	private String commandGroup;
 	private String commandAction;
-	private int number;
 	private String eiscpMessage;
 	
 	/**
@@ -19,20 +13,6 @@ public class Command {
 	 */
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	private void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @param command the command to set
-	 */
-	private void setCommand(String command) {
-		this.command = command;
 	}
 
 	/**
@@ -70,36 +50,24 @@ public class Command {
 	public String getCommandAction() {
 		return commandAction;
 	}
-	
-	
-	/**
-	 * @param number the number to set
-	 */
-	private void setNumber(int number) {
-		this.number = number;
-	}
-
-	/**
-	 * @return the commandNumber
-	 */
-	public int getNumber() {
-		return number;
-	}
-
-	
+		
 	
 	/**
 	 * @param name
 	 * @param command
 	 * @param number
 	 */
-	public Command(String name, String command, int number) {
+	public Command(String name, String command) {
 		super();
-		setName(name);
-		setCommand(command);
-		setCommandGroup(command.substring(0, 3));
-		setCommandAction(command.replace(getCommandGroup(), ""));
-		setNumber(number);
+		this.name = name;
+		this.command = command;
+		if (command.length() <= 3){
+			this.commandGroup = command;
+		}
+		else {
+			this.commandGroup = command.substring(0, 3);
+			this.commandAction = command.replace(getCommandGroup(), "");
+		}
 	}
 
 	
@@ -175,7 +143,7 @@ public class Command {
 	public String toString() {
 		return "Command [CommandName=" + getName() + 
 				", CommandString=" + getCommand() + " (" + getCommandGroup() + 
-				")(" + getCommandAction() + ") CommandNumber=" + getNumber() + "]";
+				")(" + getCommandAction() + ") ]";
 	}
 
 	

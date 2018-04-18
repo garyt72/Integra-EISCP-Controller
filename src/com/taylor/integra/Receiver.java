@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.taylor.utilities.CommunicationDevice;
-import com.taylor.utilities.Util;
 
 public class Receiver extends CommunicationDevice{
 	
@@ -15,8 +14,11 @@ public class Receiver extends CommunicationDevice{
 	private static final int			SOCKET_SEND_WAIT		= 200;
 	private static final int            SOCKET_RECV_TIMEOUT		= 200;
 	private static final int            SOCKET_RECV_WAIT		= 200;
-	private static final boolean        DEBUGGING				= Util.DEBUGGING;
+	private static final boolean        DEBUGGING				= EISCP.DEBUG;
+	private static final boolean        INFO					= EISCP.INFO;
 
+	private String name;
+	
 	@Override
 	public String getDefaultIp() {
 		return DEFAULT_IP;
@@ -42,6 +44,20 @@ public class Receiver extends CommunicationDevice{
 		return SOCKET_RECV_TIMEOUT;
 	}	
 	
+	@Override
+	public boolean getDebug() {
+		return DEBUGGING;
+	}
+
+	@Override
+	public boolean getInfo() {
+		return INFO;
+	}
+
+	public String getName() {
+		return name;
+	}
+	
 	public Receiver() {
 		super();
 	}
@@ -54,10 +70,11 @@ public class Receiver extends CommunicationDevice{
 		super(ipAddress, port);
 	}
 	
-	public void init(String ipAddress, int port) {
-		super.init(ipAddress, port);
+	public Receiver(String name, String ipAddress, int port, int delay) {
+		super(ipAddress, port, delay);
+		this.name = name;	
 	}
-	
+		
 
 	/**
 	 * Sends to command to the receiver and does not wait for a reply.
