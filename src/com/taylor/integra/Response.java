@@ -9,7 +9,7 @@ import com.taylor.utilities.Util;
 public class Response {
 
 	//private static final boolean DEBUGGING = Util.DEBUGGING;
-	private static final boolean DEBUGGING = false;
+	private static final boolean DEBUGGING = EISCP.DEBUG;
 
 	public class ResponseHeader {
 		private String start;
@@ -271,7 +271,6 @@ public class Response {
 	ResponseData data;
 	
 	
-	
 	/**
 	 * @return the header
 	 */
@@ -314,7 +313,6 @@ public class Response {
 	Response(String response) {
 		parseResponseString(response);
 	}
-	
 	
 	private void init() {
 		setHeader(new ResponseHeader());
@@ -481,7 +479,6 @@ public class Response {
 				
 		return responses;
 	}
-
 
 	public static String getFriendlyResponse (String responseMessage) {
 				

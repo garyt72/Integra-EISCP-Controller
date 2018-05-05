@@ -10,8 +10,8 @@ import java.util.Iterator;
  */
 public class EISCP {
 
-	public static boolean DEBUG = true;
-	public static boolean INFO = true;
+	public static boolean DEBUG = false;
+	public static boolean INFO = false;
 	public static Config config;
 
 	/**
@@ -155,13 +155,16 @@ public class EISCP {
 			return 5;
 		}
 
-
-	
 		String response = receiver.sendCommand(command, commandRepeat);
-		System.out.println("EISCP response:    " + response);
-		
 		String friendlyResponse = Response.getFriendlyResponse(response);
-		System.out.println("Friendly response: " + friendlyResponse);
+
+		if (DEBUG || INFO) {
+			System.out.println("EISCP response:    " + response);
+			System.out.println("Friendly response: " + friendlyResponse);
+		}
+		else {
+			System.out.println(friendlyResponse);
+		}
 
 		return 0;
 	} // main

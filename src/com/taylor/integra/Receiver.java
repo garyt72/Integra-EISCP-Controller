@@ -14,8 +14,6 @@ public class Receiver extends CommunicationDevice{
 	private static final int			SOCKET_SEND_WAIT		= 200;
 	private static final int            SOCKET_RECV_TIMEOUT		= 200;
 	private static final int            SOCKET_RECV_WAIT		= 200;
-	private static final boolean        DEBUGGING				= EISCP.DEBUG;
-	private static final boolean        INFO					= EISCP.INFO;
 
 	private String name;
 	
@@ -46,12 +44,12 @@ public class Receiver extends CommunicationDevice{
 	
 	@Override
 	public boolean getDebug() {
-		return DEBUGGING;
+		return EISCP.DEBUG;
 	}
 
 	@Override
 	public boolean getInfo() {
-		return INFO;
+		return EISCP.INFO;
 	}
 
 	public String getName() {
@@ -117,7 +115,7 @@ public class Receiver extends CommunicationDevice{
 			for (Iterator<Response> iter = responses.iterator(); iter.hasNext(); ) {
 				Response response = iter.next();
 				messages.add(response.getData().getMessage());
-				if (DEBUGGING) System.out.println("Response: " + response.getData().getMessage());
+				if (EISCP.DEBUG) System.out.println("Response: " + response.getData().getMessage());
 			}
 
 			
