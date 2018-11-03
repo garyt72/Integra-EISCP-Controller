@@ -72,32 +72,55 @@ public class EISCP {
 		// we've loaded the config file - lets get deal with the arguments that were passed
 		String receiverArg = new String();
 		String commandArg = new String();
+		Boolean verbose = false;
+		Boolean friendly = false;
+
+		try {
+			for (int i=0; i < args.length; i++) {
+
+				String argument = args[i];
 				
-		if (args.length == 2) {
-			// args are LOCATION COMMAND
-			receiverArg = args[0].toUpperCase();
-			commandArg = args[1].toUpperCase();
-		}
-		else if (args.length == 1) {
-			// only one arg was passed - it must be the command
-			commandArg = args[0].toUpperCase();
-			
-			// if only one arg was passed, there must be only one receiver
-			if (config.getReceiverList().size() == 1) {
-				// only one receiver - we will use it's name
-				receiverArg = config.getReceiverList().get(0);
+				// argument is a switch
+				if (argument.startsWith("-")) {
+					String parts[] = argument.split(":");
+					switch (parts[0]) {
+						case "-r":
+							receiverArg = parts[1];
+							break;
+						case "-v": 
+							verbose = true;
+							break;
+						case "-f": 
+							friendly = true;
+							break;
+						default:
+							System.out.println("Invalid Argument: " + argument);
+							System.out.println(getUsage(false));
+							System.exit(1);
+							return args.length;
+					}
+				} else { // argument is the command
+					commandArg = argument;
+					break;
+				}
 			}
-			else {
-				System.out.println(getUsage());
-				return 2;
-			}
-		}
-		else {
+		} catch (Exception e) {
 			System.out.println(getUsage());
 			System.exit(1);
-			return 3;
-		}		
-				
+			return args.length;
+		}
+
+		// if receiver was not specified, there must be only one receiver
+		if (config.getReceiverList().size() == 1) {
+			// only one receiver - we will use it's name
+			receiverArg = config.getReceiverList().get(0);
+		}
+		else {
+			System.out.println("Receiver not specified");
+			System.out.println(getUsage());
+			return 2;
+		}
+		
 		
 		// get the receiver
 		Receiver receiver = config.getReceiverMap().get(receiverArg);
@@ -129,7 +152,7 @@ public class EISCP {
 		
 
 		// get the command
-		Command command = config.getCommandMap().get(commandArg);
+		Command command = Config.getCommandMap().get(commandArg);
 		
 		// if there was no command, display a list of available commands & exit
 		if (command == null) {
@@ -138,7 +161,7 @@ public class EISCP {
 			output.append("Command \"" + commandArg + "\" not found\n");
 			boolean similarCommandFound = false;
 
-			for (Iterator<String> iter = config.getCommandList().iterator(); iter.hasNext();) {
+			for (Iterator<String> iter = Config.getCommandList().iterator(); iter.hasNext();) {
 				String cmd = iter.next();
 				
 				if (cmd.contains(commandArg)) {
@@ -156,7 +179,7 @@ public class EISCP {
 		}
 
 		String response = receiver.sendCommand(command, commandRepeat);
-		String friendlyResponse = Response.getFriendlyResponse(response);
+		String friendlyResponse = Response.getResponse(response, verbose, friendly);
 
 		if (DEBUG || INFO) {
 			System.out.println("EISCP response:    " + response);
@@ -181,7 +204,7 @@ public class EISCP {
 	private static String getCommandList() {
 		StringBuffer output = new StringBuffer();
 
-		for (Iterator<String> iter = config.getCommandList().iterator(); iter.hasNext();) {
+		for (Iterator<String> iter = Config.getCommandList().iterator(); iter.hasNext();) {
 			output.append("\t" + iter.next() + "\n");
 		}
 		
@@ -189,14 +212,28 @@ public class EISCP {
 	}
 
 	public static String getUsage() {
+		return getUsage(true);
+	}
+	
+	public static String getUsage(boolean displayValues) {
 		StringBuffer output = new StringBuffer();
 
-		output.append("Usage:\n\tintegra [device] command\n");
+		output.append("Usage:\n\tintegra [-v] [-f] [-d:devicename] command \n");
 		output.append("where:\n");
-		output.append("  valid devices:\n");
-		output.append(getReceiverList());
-		output.append("  valid commands:\n");
-		output.append(getCommandList());
+		output.append("  -v = verbose  (display label)\n");;
+		output.append("  -f = friendly (display friendly repsonse value if available)\n");;
+		
+		output.append("  -d:receiver = receiver if more than one");
+		if (displayValues == true) {
+			output.append("Valid devices:\n");
+			output.append(getReceiverList());
+		} else {output.append("\n");}
+		
+		output.append("  command = command to execute");
+		if (displayValues == true) {
+			output.append(" Valid commands:\n");
+			output.append(getCommandList());
+		} else {output.append("\n");}
 		
 		return output.toString();
 	}

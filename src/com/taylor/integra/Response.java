@@ -480,14 +480,18 @@ public class Response {
 		return responses;
 	}
 
-	public static String getFriendlyResponse (String responseMessage) {
+	public static String getResponse (String responseMessage) {
+		return getResponse(responseMessage, false, false);
+	}
+	
+	public static String getResponse (String responseMessage, boolean verbose, boolean friendly) {
 				
 		// get the command prefix (command) from the response string
 		String prefix = responseMessage.substring(0,3);
 		String data = responseMessage.substring(3, responseMessage.length());
 		
 		String responseLabel = new String();
-		String responseValue = new String();
+		String responseValue = responseMessage;
 		
 		// switch to prefix specifc code
 		switch (prefix) {
@@ -498,20 +502,42 @@ public class Response {
 						responseValue = new Double((double)Integer.parseInt(data, 16) / 2).toString();
 						break;
 			case "PWR":	responseLabel = "Main Power";
-						responseValue = data.equals("01")?"ON":"OFF";
+						responseValue = Config.getLabelMap().get(responseMessage);
 						break;
 			case "ZPW":	responseLabel = "Zone2 Power";
-						responseValue = data.equals("01")?"ON":"OFF";
+						responseValue = Config.getLabelMap().get(responseMessage);
 						break;
 			case "ZVL":	responseLabel = "Zone2 Volume";
 						responseValue = new Double((double)Integer.parseInt(data, 16) / 2).toString();
+						break;
+			case "AMT":	responseLabel = "Main Mute";
+						responseValue = Config.getLabelMap().get(responseMessage);
+						break;
+			case "ZMT":	responseLabel = "Zone2 Mute";
+						responseValue = Config.getLabelMap().get(responseMessage);
+						break;
+			case "SLI": responseLabel = "Main Input";
+						responseValue = Config.getLabelMap().get(responseMessage);
+						break;
+			case "SLZ": responseLabel = "Zone2 Input";
+						responseValue = Config.getLabelMap().get(responseMessage);
 						break;
 			default:	responseLabel = responseMessage;
 						responseValue = "";
 		}
 		
-		String response = (responseLabel + " " + responseValue).trim();
-		return response;
+		if (friendly == false) {
+			responseValue = responseMessage;
+		}
+		
+		String response = new String();
+		if (verbose == true) {
+			response = responseLabel + " " + responseValue;
+		} else {
+			response = responseValue;
+		}
+		
+		return response.trim();
 	}
 	
 }
