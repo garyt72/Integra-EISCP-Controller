@@ -426,7 +426,8 @@ public class Response {
 				System.out.println("   Message Start: " + new String(dataStart));
 				System.out.println("   Device:        " + new String(dataDevice));
 				System.out.println("   Message:       " + new String(dataMessage));
-				System.out.println("   Message End:   " + Util.displayAsciiCodes(new String(dataEnd)).trim());
+				System.out.println("   "
+						+ " End:   " + Util.displayAsciiCodes(new String(dataEnd)).trim());
 			}
 	
 		} catch (Exception e) {
@@ -499,7 +500,11 @@ public class Response {
 						responseValue = data;
 						break;
 			case "MVL":	responseLabel = "Main Volume";
-						responseValue = new Double((double)Integer.parseInt(data, 16) / 2).toString();
+			            try{
+							responseValue = new Double((double)Integer.parseInt(data, 16) / 2).toString();
+			            }catch (Exception e) {
+			            	responseValue = data;
+			            }
 						break;
 			case "PWR":	responseLabel = "Main Power";
 						responseValue = Config.getLabelMap().get(responseMessage);
@@ -511,7 +516,11 @@ public class Response {
 						responseValue = new Double((double)Integer.parseInt(data, 16) / 2).toString();
 						break;
 			case "AMT":	responseLabel = "Main Mute";
-						responseValue = Config.getLabelMap().get(responseMessage);
+						try{
+							responseValue = Config.getLabelMap().get(responseMessage);
+						}catch (Exception e) {
+							responseValue = data;
+						}
 						break;
 			case "ZMT":	responseLabel = "Zone2 Mute";
 						responseValue = Config.getLabelMap().get(responseMessage);
@@ -523,7 +532,12 @@ public class Response {
 						responseValue = Config.getLabelMap().get(responseMessage);
 						break;
 			default:	responseLabel = responseMessage;
-						responseValue = "";
+			            try{
+			            	responseValue = Config.getLabelMap().get(responseMessage);
+			            }
+			            catch(Exception e) {
+							responseValue = "";
+			            }
 		}
 		
 		if (friendly == false) {

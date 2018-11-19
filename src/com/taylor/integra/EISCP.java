@@ -39,7 +39,7 @@ public class EISCP {
 		if (env != null && env.toLowerCase().equals("true")) {
 			if (DEBUG) System.out.println("Info output enabled by ENV variable \"INFO\"");
 			INFO = true;
-		}
+		} 
 
 		// try to load configuration settings from file
 		
@@ -85,7 +85,7 @@ public class EISCP {
 					String parts[] = argument.split(":");
 					switch (parts[0]) {
 						case "-r":
-							receiverArg = parts[1];
+							receiverArg = parts[1].toUpperCase();
 							break;
 						case "-v": 
 							verbose = true;
@@ -100,7 +100,7 @@ public class EISCP {
 							return args.length;
 					}
 				} else { // argument is the command
-					commandArg = argument;
+					commandArg = argument.toUpperCase();
 					break;
 				}
 			}
@@ -150,9 +150,22 @@ public class EISCP {
 			}
 		}
 		
+		// handle set commands by appending : + value
+		// example VOLUME_SET:55 executes VOLUME_SET (MVLxx) 
+		String commandSetValue = null;
+		if (commandArg.contains("SET:")) {
+			String[] split = commandArg.split(":");
+			commandArg = split[0];
+			commandSetValue = split[1];
+		}
 
 		// get the command
 		Command command = Config.getCommandMap().get(commandArg);
+		
+		// if there was a "SET" command passed - update the command with the value passed
+		if (commandSetValue != null){
+			command.setCommandAction(commandSetValue);
+		}
 		
 		// if there was no command, display a list of available commands & exit
 		if (command == null) {
@@ -223,7 +236,7 @@ public class EISCP {
 		output.append("  -v = verbose  (display label)\n");;
 		output.append("  -f = friendly (display friendly repsonse value if available)\n");;
 		
-		output.append("  -d:receiver = receiver if more than one");
+		output.append("  -r:receiver = receiver if more than one");
 		if (displayValues == true) {
 			output.append("Valid devices:\n");
 			output.append(getReceiverList());

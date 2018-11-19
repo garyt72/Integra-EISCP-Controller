@@ -115,7 +115,7 @@ public class Receiver extends CommunicationDevice{
 			for (Iterator<Response> iter = responses.iterator(); iter.hasNext(); ) {
 				Response response = iter.next();
 				messages.add(response.getData().getMessage());
-				if (EISCP.DEBUG) System.out.println("Response: " + response.getData().getMessage());
+				if (EISCP.DEBUG || EISCP.INFO) System.out.println("Response: " + response.getData().getMessage());
 			}
 
 			

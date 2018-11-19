@@ -41,7 +41,25 @@ public class Command {
 	 * @param commandAction the commandAction to set
 	 */
 	public void setCommandAction(String commandAction) {
-		this.commandAction = commandAction;
+		
+		// convert from decimal to hex for MVL & ZVL commands
+		if (getCommandGroup().equals("MVL") || getCommandGroup().equals("ZVL")) {
+			try {
+				double doubleValue = Double.parseDouble(commandAction);
+				int intValue = (int) (doubleValue * 2);
+			
+				// convert the integer value to hex;
+				String hex = Integer.toHexString(intValue);
+				this.commandAction = hex;
+
+			} catch (Exception e) { 
+				// do nothing 
+			}
+		} else {
+			this.commandAction = commandAction;
+		}
+				
+		this.command = getCommandGroup() + getCommandAction();
 	}
 
 	/**
