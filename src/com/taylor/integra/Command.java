@@ -44,17 +44,12 @@ public class Command {
 		
 		// convert from decimal to hex for MVL & ZVL commands
 		if (getCommandGroup().equals("MVL") || getCommandGroup().equals("ZVL")) {
-			try {
-				double doubleValue = Double.parseDouble(commandAction);
-				int intValue = (int) (doubleValue * 2);
-			
-				// convert the integer value to hex;
-				String hex = Integer.toHexString(intValue);
-				this.commandAction = hex;
-
-			} catch (Exception e) { 
-				// do nothing 
-			}
+			// get the hex value for the number that was passed (as a string)
+			this.commandAction = getIntegraHexValue(commandAction);
+		} else if (getCommandGroup().equals("CTL")) {
+			this.commandAction = getCenterLevelValue(new String(commandAction));
+		} else if (getCommandGroup().equals("TUN")) {
+			this.commandAction = getRadioTunerValue(commandAction);
 		} else {
 			this.commandAction = commandAction;
 		}
@@ -164,6 +159,88 @@ public class Command {
 				")(" + getCommandAction() + ") ]";
 	}
 
+	/**
+	 * 
+	 * @param input The String to convert
+	 * @return a 2-character hex value representation of the value passed
+	 */
+	private String getIntegraHexValue(String input){
+
+		String result;
+		
+		try {
+			double doubleValue = Double.parseDouble(input);
+			int intValue = (int) (doubleValue * 2);
+		
+			// convert the integer value to hex;
+			String hex = Integer.toHexString(intValue);
+			if (hex.length() == 1) {
+				hex = "0" + hex;
+			}
+			result = hex;
+
+		} catch (Exception e) { 
+			result = "";
+		}
+		return result;
+		
+	}
 	
+	/**
+	 * 
+	 * @param input Center level string value
+	 * @return a valid 3 character CTL HEX value representation of the value passed
+	 */
+	private String getCenterLevelValue(String input) {
+		
+		// make a local copy of the passed value so we can manipulate it without causing upstream issues
+		String value = new String(input); 
+		String result = "";
+		boolean negative = false;
+
+		// detect and handle negatives
+		if (value.contains("-")) {
+			negative = true;
+			value = value.replace("-", "");
+		}
+		
+		// get the hex value for what we have
+		result = getIntegraHexValue(value);
+		
+		if (result.equals("00")) {
+			result = "0" + result;
+			negative = false;
+		}else if (negative == true){
+			result = "-" + result;
+		} else {
+			result = "+" + result;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * 
+	 * @param input radio frequency value
+	 * @return formatted integra frequency string
+	 */
+	private String getRadioTunerValue(String input) {
+		String result;
+		try {
+			double doubleValue = Double.parseDouble(input);
+			doubleValue = doubleValue * 100;
+			int intValue = (int) doubleValue;
+			result = Integer.toString(intValue);
+			
+			while (result.length() < 5) {
+				result = "0" + result;
+			}
+
+		} catch (Exception e) { 
+			result = "";
+		}
+		
+		return result;
+	}
 	
 }
