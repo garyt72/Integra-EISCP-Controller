@@ -39,7 +39,7 @@ public class EISCP {
 		if (env != null && env.toLowerCase().equals("true")) {
 			if (DEBUG) System.out.println("Info output enabled by ENV variable \"INFO\"");
 			INFO = true;
-		} 
+		}
 
 		// try to load configuration settings from file
 		

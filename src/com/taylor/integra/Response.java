@@ -426,8 +426,7 @@ public class Response {
 				System.out.println("   Message Start: " + new String(dataStart));
 				System.out.println("   Device:        " + new String(dataDevice));
 				System.out.println("   Message:       " + new String(dataMessage));
-				System.out.println("   "
-						+ " End:   " + Util.displayAsciiCodes(new String(dataEnd)).trim());
+				System.out.println("   Message End:   " + Util.displayAsciiCodes(new String(dataEnd)).trim());
 			}
 	
 		} catch (Exception e) {
